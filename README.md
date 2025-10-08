@@ -66,3 +66,114 @@ print("Инициалы:", initials)
 print("Длина (символов):", length)
 ```
 ![Картинка 5](./image/lab01/ex05.png)
+
+
+## Лабораторная работа 2
+
+### Задание 1
+```python
+def min_max(nums):
+    if not nums:
+        return "ValueError"
+    mn = mx = nums[0]
+    for n in nums[1:]:
+        if n < mn:
+            mn = n
+        if n > mx:
+            mx = n
+    return mn, mx
+
+
+print(min_max([3, -1, 5, 5, 0]))
+print(min_max([42]))
+print(min_max([-5, -2, -9]))
+print(min_max([]))
+print(min_max([1.5, 2, 2.0, -3.1]))
+
+
+def unique_sorted(nums):
+    return sorted(set(nums))
+
+print(unique_sorted([3, 1, 2, 1, 3]))
+print(unique_sorted([]))
+print(unique_sorted([-1, -1, 0, 2, 2]))
+print(unique_sorted([1.0, 1, 2.5, 2.5, 0]))
+
+
+def flatten(mat: list[list | tuple]) -> list:
+
+  n = []
+  for row in mat:
+      for i in row:
+          if type(i) != int:
+            return "TypeError"
+          n.append(i)
+  return n
+
+
+print(flatten([[1, 2], [3, 4]]))
+print(flatten([[1, 2], (3, 4, 5)]))
+print(flatten([[1], [], [2, 3]]))
+print(flatten([[1, 2], "ab"]))
+```
+![Картинка 1](./image/lab02/arrays.py/ex01.png)
+
+### Задание 2
+```python
+def transpose(matrix):
+    if not matrix:
+        return []
+
+    length = len(matrix[0])
+    for row in matrix:
+        if len(row) != length:
+            return "ValueError"
+    return [list(col) for col in zip(*matrix)]
+
+
+print(transpose([[1, 2, 3]]))
+print(transpose([[1], [2], [3]]))
+print(transpose([[1, 2], [3, 4]]))
+print(transpose([]))
+
+
+def row_sums(matrix):
+    length = len(matrix[0])
+    for row in matrix:
+        if len(row) != length:
+            return "ValueError"
+
+    return [sum(row) for row in matrix]
+
+
+print(row_sums([[1, 2, 3], [4, 5, 6]]))
+print(row_sums([[-1, 1], [10, -10]]))
+print(row_sums([[0, 0], [0, 0]]))
+print(row_sums([[1, 2], [3]]))
+
+
+def col_sums(matrix):
+    length = len(matrix[0])
+    for row in matrix:
+        if len(row) != length:
+            return "ValueError"
+
+    return [sum(col) for col in zip(*matrix)]
+
+
+print(col_sums([[1, 2, 3], [4, 5, 6]]))
+print(col_sums([[-1, 1], [10, -10]]))
+print(col_sums([[0, 0], [0, 0]]))
+print(col_sums([[1, 2], [3]]))
+```
+![Картинка 1](./image/lab01/ex01.png)
+
+
+
+
+
+
+
+
+
+
