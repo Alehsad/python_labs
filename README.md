@@ -116,7 +116,7 @@ print(flatten([[1, 2], (3, 4, 5)]))
 print(flatten([[1], [], [2, 3]]))
 print(flatten([[1, 2], "ab"]))
 ```
-![Картинка 1](./image/lab02/arrays.py/ex01.png)
+![Картинка 1](./image/lab02/arrays.png)
 
 ### Задание 2
 ```python
@@ -166,7 +166,7 @@ print(col_sums([[-1, 1], [10, -10]]))
 print(col_sums([[0, 0], [0, 0]]))
 print(col_sums([[1, 2], [3]]))
 ```
-![Картинка 1](./image/lab01/ex01.png)
+![Картинка 1](./image/lab02/matrix.png)
 
 
 
