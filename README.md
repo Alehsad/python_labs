@@ -175,13 +175,13 @@ def format_record(rec):
     fio, group, gpa = rec
 
     if not fio.strip() or not group.strip():
-        print("ValueError")
+        return "ValueError"
 
     parts = fio.strip().split()
     parts = [p.capitalize() for p in parts]
 
     if len(parts) < 2:
-        print("ValueError")
+        return "ValueError"
 
     surname = parts[0]
     initials = ''
