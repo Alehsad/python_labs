@@ -168,7 +168,7 @@ print(col_sums([[1, 2], [3]]))
 ```
 ![Картинка 1](./image/lab02/matrix.png)
 
-### Задание 1
+### Задание 3
 ```python
 def format_record(rec):
 
