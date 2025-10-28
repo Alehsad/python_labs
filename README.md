@@ -203,7 +203,7 @@ print(format_record(("  сидорова  анна   сергеевна ", "ABB-
 
 ## Лабораторная работа 3
 
-### Задание A
+### Задание A01
 ```python
 def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
     if yo2e:
@@ -224,6 +224,32 @@ print(normalize("Hello\r\nWorld"))
 print(normalize("  двойные   пробелы  "))
 ```
 
-![Картинка 1](./image/lab03/text.png)
+![Картинка 1](./image/lab03/text01.png)
 
+### Задание A02
+```python
+def tokenize(text: str) -> list[str]:
 
+    result = []
+    word = ""
+
+    for ch in text:
+        if ch.isalnum() or ch == "_" or (ch == "-" and word):
+            word += ch
+        else:
+            if word and word[-1] != "-":
+                result.append(word)
+            word = ""
+
+    if word and word[-1] != "-":
+        result.append(word)
+
+    return result
+
+print(tokenize("привет мир"))
+print(tokenize("hello,world!!!"))
+print(tokenize("по-настоящему круто"))
+print(tokenize("2025 год"))
+print(tokenize("emoji 😀 не слово"))
+```
+![Картинка 1](./image/lab03/text02.png)
