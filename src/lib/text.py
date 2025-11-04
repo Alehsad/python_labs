@@ -11,10 +11,10 @@ def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
 
     return text
 
-print(normalize("ПрИвЕт\nМИр\t"))
-print(normalize("ёжик, Ёлка"))
-print(normalize("Hello\r\nWorld"))
-print(normalize("  двойные   пробелы  "))
+# print(normalize("ПрИвЕт\nМИр\t"))
+# print(normalize("ёжик, Ёлка"))
+# print(normalize("Hello\r\nWorld"))
+# print(normalize("  двойные   пробелы  "))
 
 
 def tokenize(text: str) -> list[str]:
@@ -36,11 +36,11 @@ def tokenize(text: str) -> list[str]:
     return result
 
 
-print(tokenize("привет мир"))
-print(tokenize("hello,world!!!"))
-print(tokenize("по-настоящему круто"))
-print(tokenize("2025 год"))
-print(tokenize("emoji 😀 не слово"))
+# print(tokenize("привет мир"))
+# print(tokenize("hello,world!!!"))
+# print(tokenize("по-настоящему круто"))
+# print(tokenize("2025 год"))
+# print(tokenize("emoji 😀 не слово"))
 
 def count_freq(tokens: list[str]) -> dict[str, int]:
     freqs = {}
