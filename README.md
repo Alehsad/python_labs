@@ -203,7 +203,7 @@ print(format_record(("  сидорова  анна   сергеевна ", "ABB-
 
 ## Лабораторная работа 3
 
-### Задание A01
+### Задание A
 ```python
 def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
     if yo2e:
@@ -224,12 +224,10 @@ print(normalize("Hello\r\nWorld"))
 print(normalize("  двойные   пробелы  "))
 ```
 
-![Картинка 1](./image/lab03/text01.png)
+![Картинка 1](./image/lab03/A01.png)
 
-### Задание A02
 ```python
 def tokenize(text: str) -> list[str]:
-
     result = []
     word = ""
 
@@ -241,10 +239,12 @@ def tokenize(text: str) -> list[str]:
                 result.append(word)
             word = ""
 
+
     if word and word[-1] != "-":
         result.append(word)
 
     return result
+
 
 print(tokenize("привет мир"))
 print(tokenize("hello,world!!!"))
@@ -252,4 +252,35 @@ print(tokenize("по-настоящему круто"))
 print(tokenize("2025 год"))
 print(tokenize("emoji 😀 не слово"))
 ```
-![Картинка 1](./image/lab03/text02.png)
+
+![Картинка 2](./image/lab03/A02.png)
+
+```python
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    freqs = {}
+    for token in tokens:
+        freqs[token] = freqs.get(token, 0) + 1
+    return freqs
+
+
+def sort_key(item):
+    word, count = item
+    return (-count, word)
+
+
+def top_n(freqs: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    sorted_items = sorted(freqs.items(), key=sort_key)
+    return sorted_items[:n]
+
+tokens1 = ["a", "b", "a", "c", "b", "a"]
+freqs1 = count_freq(tokens1)
+print("Частоты:", freqs1)
+print("Top-2:", top_n(freqs1, n=2))
+print()
+
+tokens2 = ["bb", "aa", "bb", "aa", "cc"]
+freqs2 = count_freq(tokens2)
+print("Частоты:", freqs2)
+print("Top-2:", top_n(freqs2, n=2))
+```
+![Картинка 3](./image/lab03/A03.png)
