@@ -60,11 +60,11 @@ def top_n(freqs: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
 
 tokens1 = ["a", "b", "a", "c", "b", "a"]
 freqs1 = count_freq(tokens1)
-print("Частоты:", freqs1)
-print("Top-2:", top_n(freqs1, n=2))
-print()
+# print("Частоты:", freqs1)
+# print("Top-2:", top_n(freqs1, n=2))
+# print()
 
 tokens2 = ["bb", "aa", "bb", "aa", "cc"]
 freqs2 = count_freq(tokens2)
-print("Частоты:", freqs2)
-print("Top-2:", top_n(freqs2, n=2))
+# print("Частоты:", freqs2)
+# print("Top-2:", top_n(freqs2, n=2))
