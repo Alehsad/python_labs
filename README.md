@@ -308,4 +308,4 @@ def main():
 main()
 ```
 
-![Картинка 3](./image/lab03/B01.png)
+![Картинка 3](./images/lab03/B01.png)
