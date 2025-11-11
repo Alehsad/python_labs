@@ -1,5 +1,4 @@
-﻿# src/lab04/io_txt_csv.py
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import csv
 from pathlib import Path
