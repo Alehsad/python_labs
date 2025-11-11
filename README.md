@@ -9,7 +9,7 @@ age = int(input("Возраст: "))
 
 print(f"Привет {name}! Через год тебе будет {age + 1}.")
 ```
-![Картинка 1](./image/lab01/ex01.png)
+![Картинка 1](./images/lab01/ex01.png)
 
 ### Задание 2
 ```python
@@ -23,7 +23,7 @@ avg = s / 2
 
 print("sum=" + str(round(s, 2)) + "; avg=" + str(round(avg, 2)))
 ```
-![Картинка 2](./image/lab01/ex02.png)
+![Картинка 2](./images/lab01/ex02.png)
 
 ### Задание 3
 ```python
@@ -39,7 +39,7 @@ print("База после скидки:", round(base, 2), "₽")
 print("НДС:              ", round(vat_amount, 2), "₽")
 print("Итого к оплате:   ", round(total, 2), "₽")
 ```
-![Картинка 3](./image/lab01/ex03.png)
+![Картинка 3](./images/lab01/ex03.png)
 
 ### Задание 4
 ```python
@@ -50,7 +50,7 @@ mm = m % 60
 
 print(f"{h}:{mm:02d}")
 ```
-![Картинка 4](./image/lab01/ex04.png)
+![Картинка 4](./images/lab01/ex04.png)
 
 ### Задание 5
 ```python
@@ -65,7 +65,7 @@ length = len(fio.strip())
 print("Инициалы:", initials)
 print("Длина (символов):", length)
 ```
-![Картинка 5](./image/lab01/ex05.png)
+![Картинка 5](./images/lab01/ex05.png)
 
 
 ## Лабораторная работа 2
@@ -116,7 +116,7 @@ print(flatten([[1, 2], (3, 4, 5)]))
 print(flatten([[1], [], [2, 3]]))
 print(flatten([[1, 2], "ab"]))
 ```
-![Картинка 1](./image/lab02/arrays.png)
+![Картинка 1](./images/lab02/arrays.png)
 
 ### Задание 2
 ```python
@@ -166,7 +166,7 @@ print(col_sums([[-1, 1], [10, -10]]))
 print(col_sums([[0, 0], [0, 0]]))
 print(col_sums([[1, 2], [3]]))
 ```
-![Картинка 1](./image/lab02/matrix.png)
+![Картинка 1](./images/lab02/matrix.png)
 
 ### Задание 3
 ```python
@@ -198,7 +198,7 @@ print(format_record(("Петров Пётр", "IKBO-12", 5.0)))
 print(format_record(("  сидорова  анна   сергеевна ", "ABB-01", 3.999)))
 ```
 
-![Картинка 1](./image/lab02/tuples.png)
+![Картинка 1](./images/lab02/tuples.png)
 
 
 ## Лабораторная работа 3
@@ -224,7 +224,7 @@ print(normalize("Hello\r\nWorld"))
 print(normalize("  двойные   пробелы  "))
 ```
 
-![Картинка 1](./image/lab03/A01.png)
+![Картинка 1](./images/lab03/A01.png)
 
 ```python
 def tokenize(text: str) -> list[str]:
@@ -253,7 +253,7 @@ print(tokenize("2025 год"))
 print(tokenize("emoji 😀 не слово"))
 ```
 
-![Картинка 2](./image/lab03/A02.png)
+![Картинка 2](./images/lab03/A02.png)
 
 ```python
 def count_freq(tokens: list[str]) -> dict[str, int]:
@@ -283,7 +283,7 @@ freqs2 = count_freq(tokens2)
 print("Частоты:", freqs2)
 print("Top-2:", top_n(freqs2, n=2))
 ```
-![Картинка 3](./image/lab03/A03.png)
+![Картинка 3](./images/lab03/A03.png)
 
 ### Задание B
 ```python
