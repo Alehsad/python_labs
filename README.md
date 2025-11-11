@@ -315,7 +315,6 @@ main()
 
 ### Задание A
 ```python
-# src/lab04/io_txt_csv.py
 from __future__ import annotations
 
 import csv
