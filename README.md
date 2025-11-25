@@ -315,21 +315,22 @@ main()
 
 ### Задание A
 ```python
-from __future__ import annotations
-
 import csv
 from pathlib import Path
 from typing import Iterable, Sequence
 
 
 def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    """Прочитать файл целиком и вернуть содержимое как строку."""
     return Path(path).read_text(encoding=encoding)
 
 
 def ensure_parent_dir(path: str | Path) -> None:
-    p = Path(path)
-    if p.parent and not p.parent.exists():
-        p.parent.mkdir(parents=True, exist_ok=True)
+    """Создать родительскую папку для path, если её ещё нет."""
+    pathObj = Path(path)
+    parent = pathObj.parent
+    if parent and not parent.exists():
+        parent.mkdir(parents=True, exist_ok=True)
 
 
 def write_csv(
@@ -337,103 +338,113 @@ def write_csv(
     path: str | Path,
     header: tuple[str, ...] | None = None,
 ) -> None:
-    p = Path(path)
-    ensure_parent_dir(p)
+    """Записать строки в CSV-файл с разделителем запятая."""
+    pathObj = Path(path)
+    ensure_parent_dir(pathObj)
 
-    rows_list = list(rows)
-    row_len: int | None = len(rows_list[0]) if rows_list else None
+    rowList = list(rows)
+    rowLen: int | None = len(rowList[0]) if rowList else None
 
     if header is not None:
-        if row_len is None:
-            row_len = len(header)
-        elif len(header) != row_len:
-            raise ValueError(f"Header length {len(header)} != row length {row_len}")
+        if rowLen is None:
+            rowLen = len(header)
+        elif len(header) != rowLen:
+            raise ValueError(
+                f"Header length {len(header)} != row length {rowLen}"
+            )
 
-    if row_len is not None:
-        for i, r in enumerate(rows_list):
-            if len(r) != row_len:
-                raise ValueError(f"Row {i} length {len(r)} != expected {row_len}")
+    if rowLen is not None:
+        for index, row in enumerate(rowList):
+            if len(row) != rowLen:
+                raise ValueError(
+                    f"Row {index} length {len(row)} != expected {rowLen}"
+                )
 
-    with p.open("w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
+    with pathObj.open("w", encoding="utf-8", newline="") as file:
+        writer = csv.writer(file)
         if header is not None:
-            w.writerow(header)
-        for r in rows_list:
-            w.writerow(r)
+            writer.writerow(header)
+        for row in rowList:
+            writer.writerow(row)
 ```
 
 ![Картинка 3](./images/lab04/exA01.png)
 
 ### Задание B
 ```python
-from __future__ import annotations
-
+import sys
 import argparse
 from pathlib import Path
 from typing import Sequence
 
-from src.lab04.io_txt_csv import read_text, write_csv
-from src.lib.text import normalize, tokenize, count_freq, top_n
+scriptFile = Path(__file__).resolve()
+srcDir = scriptFile.parents[1]
+if str(srcDir) not in sys.path:
+    sys.path.insert(0, str(srcDir))
+
+from lab04.io_txt_csv import read_text, write_csv
+from lib.text import normalize, tokenize, count_freq, top_n
 
 
-def _sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
-    return sorted(freq.items(), key=lambda kv: (-kv[1], kv[0]))
+def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+    return sorted(freq.items(), key=lambda pair: (-pair[1], pair[0]))
 
 
-def _report_single(in_path: Path, out_path: Path, encoding: str, top: int) -> None:
+def report_single(in_path: Path, out_path: Path, encoding: str, top_size: int) -> None:
     text = read_text(in_path, encoding=encoding)
     tokens = tokenize(normalize(text))
-    freqs = count_freq(tokens)
+    freq = count_freq(tokens)
 
     print(f"Всего слов: {len(tokens)}")
-    print(f"Уникальных слов: {len(freqs)}")
+    print(f"Уникальных слов: {len(freq)}")
     print("Топ-5:")
-    for w, c in top_n(freqs, n=top):
-        print(f"{w}:{c}")
+    for word, amount in top_n(freq, n=top_size):
+        print(f"{word}:{amount}")
 
-    rows: list[Sequence] = _sorted_word_counts(freqs)
+    rows: list[Sequence] = sorted_word_counts(freq)
     write_csv(rows, out_path, header=("word", "count"))
 
 
-def _report_multi(in_paths: list[Path], out_path: Path, encoding: str, top: int) -> None:
+def report_multi(path_list: list[Path], out_path: Path, encoding: str, top_size: int) -> None:
     all_rows: list[tuple[str, str, int]] = []
-    for p in in_paths:
-        text = read_text(p, encoding=encoding)
+
+    for path in path_list:
+        text = read_text(path, encoding=encoding)
         tokens = tokenize(normalize(text))
-        freqs = count_freq(tokens)
+        freq = count_freq(tokens)
 
-        print(f"[{p}]")
+        print(f"[{path}]")
         print(f"Всего слов: {len(tokens)}")
-        print(f"Уникальных слов: {len(freqs)}")
+        print(f"Уникальных слов: {len(freq)}")
         print("Топ-5:")
-        for w, c in top_n(freqs, n=top):
-            print(f"{w}:{c}")
+        for word, amount in top_n(freq, n=top_size):
+            print(f"{word}:{amount}")
 
-        for w, c in _sorted_word_counts(freqs):
-            all_rows.append((str(p), w, c))
+        for word, amount in sorted_word_counts(freq):
+            all_rows.append((str(path), word, amount))
 
-    all_rows.sort(key=lambda r: (r[0], -r[2], r[1]))
+    all_rows.sort(key=lambda item: (item[0], -item[2], item[1]))
     write_csv(all_rows, out_path, header=("file", "word", "count"))
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser()
-    p.add_argument("inputs", nargs="+")
-    p.add_argument("--out", default="data/lab04/report.csv")
-    p.add_argument("--encoding", default="utf-8")
-    p.add_argument("--top", type=int, default=5)
-    return p
+    parser = argparse.ArgumentParser()
+    parser.add_argument("inputs", nargs="+")
+    parser.add_argument("--out", default="data/lab04/report.csv")
+    parser.add_argument("--encoding", default="utf-8")
+    parser.add_argument("--top", type=int, default=5)
+    return parser
 
 
 def main() -> int:
     args = build_parser().parse_args()
-    in_paths = [Path(s) for s in args.inputs]
+    path_list = [Path(text_path) for text_path in args.inputs]
     out_path = Path(args.out)
 
-    if len(in_paths) == 1:
-        _report_single(in_paths[0], out_path, args.encoding, args.top)
+    if len(path_list) == 1:
+        report_single(path_list[0], out_path, args.encoding, args.top)
     else:
-        _report_multi(in_paths, out_path, args.encoding, args.top)
+        report_multi(path_list, out_path, args.encoding, args.top)
 
     print(f"\nГотово: CSV сохранён в {out_path}")
     return 0
