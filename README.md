@@ -444,3 +444,156 @@ main()
 
 ![Картинка 3](./images/lab04/exB01.png)
 ![Картинка 3](./images/lab04/exB02.png)
+
+
+## Лабораторная работа 5
+
+### Задание A
+```python
+import json
+import csv
+from pathlib import Path
+
+
+def json_to_csv(json_path: str, csv_path: str) -> None:
+    json_file = Path(json_path)
+    csv_file = Path(csv_path)
+
+    if json_file.suffix.lower() != ".json" or csv_file.suffix.lower() != ".csv":
+        raise ValueError("Ожидаются файлы .json (вход) и .csv (выход)")
+
+    try:
+        with json_file.open(encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        raise
+    except json.JSONDecodeError as e:
+        raise ValueError("Пустой JSON или ошибка формата") from e
+
+    if not isinstance(data, list) or not data:
+        raise ValueError("Пустой JSON или неподдерживаемая структура (нужен список словарей)")
+
+    if not all(isinstance(item, dict) for item in data):
+        raise ValueError("JSON должен содержать только словари")
+
+    fieldnames = list(data[0].keys())
+    for row in data[1:]:
+        for key in row.keys():
+            if key not in fieldnames:
+                fieldnames.append(key)
+
+    csv_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with csv_file.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for obj in data:
+            row = {}
+            for key in fieldnames:
+                value = obj.get(key, "")
+                if value is None:
+                    value = ""
+                row[key] = str(value)
+            writer.writerow(row)
+
+
+def csv_to_json(csv_path: str, json_path: str) -> None:
+    csv_file = Path(csv_path)
+    json_file = Path(json_path)
+
+    if csv_file.suffix.lower() != ".csv" or json_file.suffix.lower() != ".json":
+        raise ValueError("Ожидаются файлы .csv (вход) и .json (выход)")
+
+    try:
+        with csv_file.open(encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+
+            if not reader.fieldnames or all(not (h or "").strip() for h in reader.fieldnames):
+                raise ValueError("CSV без заголовка или пустой")
+
+            rows = []
+            for row in reader:
+                clean_row = {}
+                for k, v in row.items():
+                    clean_row[k] = "" if v is None else str(v)
+                rows.append(clean_row)
+    except FileNotFoundError:
+        raise
+
+    if not rows:
+        raise ValueError("Пустой CSV")
+
+    json_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with json_file.open("w", encoding="utf-8") as f:
+        import json
+        json.dump(rows, f, ensure_ascii=False, indent=2)
+```
+
+![Картинка 1](./images/lab05/exA_sample01.png)
+![Картинка 2](./images/lab05/exA_out01.png)
+![Картинка 3](./images/lab05/exA_sample02.png)
+![Картинка 4](./images/lab05/exA_out02.png)
+
+### Задание B
+```python
+import csv
+from pathlib import Path
+
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+
+
+def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
+    csv_file = Path(csv_path)
+    xlsx_file = Path(xlsx_path)
+
+    if csv_file.suffix.lower() != ".csv" or xlsx_file.suffix.lower() != ".xlsx":
+        raise ValueError("Ожидаются файлы .csv (вход) и .xlsx (выход)")
+
+    try:
+        with csv_file.open(encoding="utf-8") as f:
+            reader = csv.reader(f)
+
+            try:
+                header = next(reader)
+            except StopIteration:
+                raise ValueError("CSV без заголовка или пустой")
+
+            if not header or all((h or "").strip() == "" for h in header):
+                raise ValueError("CSV без заголовка")
+
+            rows = [header] + [row for row in reader]
+    except FileNotFoundError:
+        raise
+
+    if len(rows) <= 1:
+        raise ValueError("Пустой CSV")
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
+
+    max_widths = [max(len(str(cell)), 8) for cell in rows[0]]
+
+    for row in rows:
+        ws.append(row)
+
+        if len(row) > len(max_widths):
+            max_widths.extend([8] * (len(row) - len(max_widths)))
+
+        for i, cell in enumerate(row):
+            length = len(str(cell))
+            if length > max_widths[i]:
+                max_widths[i] = length
+
+    for col_index, width in enumerate(max_widths, start=1):
+        col_letter = get_column_letter(col_index)
+        ws.column_dimensions[col_letter].width = max(width, 8)
+
+    xlsx_file.parent.mkdir(parents=True, exist_ok=True)
+    wb.save(xlsx_file)
+```
+
+![Картинка 1](./images/lab05/exB_sample01.png)
+![Картинка 4](./images/lab05/exB_out01.png)
