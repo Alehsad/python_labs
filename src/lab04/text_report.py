@@ -1,75 +1,79 @@
-from __future__ import annotations
-
+import sys
 import argparse
 from pathlib import Path
 from typing import Sequence
 
-from src.lab04.io_txt_csv import read_text, write_csv
-from src.lib.text import normalize, tokenize, count_freq, top_n
+scriptFile = Path(__file__).resolve()
+srcDir = scriptFile.parents[1]
+if str(srcDir) not in sys.path:
+    sys.path.insert(0, str(srcDir))
+
+from lab04.io_txt_csv import read_text, write_csv
+from lib.text import normalize, tokenize, count_freq, top_n
 
 
-def _sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
-    return sorted(freq.items(), key=lambda kv: (-kv[1], kv[0]))
+def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+    return sorted(freq.items(), key=lambda pair: (-pair[1], pair[0]))
 
 
-def _report_single(in_path: Path, out_path: Path, encoding: str, top: int) -> None:
+def report_single(in_path: Path, out_path: Path, encoding: str, top_size: int) -> None:
     text = read_text(in_path, encoding=encoding)
     tokens = tokenize(normalize(text))
-    freqs = count_freq(tokens)
+    freq = count_freq(tokens)
 
     print(f"Всего слов: {len(tokens)}")
-    print(f"Уникальных слов: {len(freqs)}")
+    print(f"Уникальных слов: {len(freq)}")
     print("Топ-5:")
-    for w, c in top_n(freqs, n=top):
-        print(f"{w}:{c}")
+    for word, amount in top_n(freq, n=top_size):
+        print(f"{word}:{amount}")
 
-    rows: list[Sequence] = _sorted_word_counts(freqs)
+    rows: list[Sequence] = sorted_word_counts(freq)
     write_csv(rows, out_path, header=("word", "count"))
 
 
-def _report_multi(in_paths: list[Path], out_path: Path, encoding: str, top: int) -> None:
+def report_multi(path_list: list[Path], out_path: Path, encoding: str, top_size: int) -> None:
     all_rows: list[tuple[str, str, int]] = []
-    for p in in_paths:
-        text = read_text(p, encoding=encoding)
+
+    for path in path_list:
+        text = read_text(path, encoding=encoding)
         tokens = tokenize(normalize(text))
-        freqs = count_freq(tokens)
+        freq = count_freq(tokens)
 
-        print(f"[{p}]")
+        print(f"[{path}]")
         print(f"Всего слов: {len(tokens)}")
-        print(f"Уникальных слов: {len(freqs)}")
+        print(f"Уникальных слов: {len(freq)}")
         print("Топ-5:")
-        for w, c in top_n(freqs, n=top):
-            print(f"{w}:{c}")
+        for word, amount in top_n(freq, n=top_size):
+            print(f"{word}:{amount}")
 
-        for w, c in _sorted_word_counts(freqs):
-            all_rows.append((str(p), w, c))
+        for word, amount in sorted_word_counts(freq):
+            all_rows.append((str(path), word, amount))
 
-    all_rows.sort(key=lambda r: (r[0], -r[2], r[1]))
+    all_rows.sort(key=lambda item: (item[0], -item[2], item[1]))
     write_csv(all_rows, out_path, header=("file", "word", "count"))
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser()
-    p.add_argument("inputs", nargs="+")
-    p.add_argument("--out", default="data/lab04/report.csv")
-    p.add_argument("--encoding", default="utf-8")
-    p.add_argument("--top", type=int, default=5)
-    return p
+    parser = argparse.ArgumentParser()
+    parser.add_argument("inputs", nargs="+")
+    parser.add_argument("--out", default="data/lab04/report.csv")
+    parser.add_argument("--encoding", default="utf-8")
+    parser.add_argument("--top", type=int, default=5)
+    return parser
 
 
 def main() -> int:
     args = build_parser().parse_args()
-    in_paths = [Path(s) for s in args.inputs]
+    path_list = [Path(text_path) for text_path in args.inputs]
     out_path = Path(args.out)
 
-    if len(in_paths) == 1:
-        _report_single(in_paths[0], out_path, args.encoding, args.top)
+    if len(path_list) == 1:
+        report_single(path_list[0], out_path, args.encoding, args.top)
     else:
-        _report_multi(in_paths, out_path, args.encoding, args.top)
+        report_multi(path_list, out_path, args.encoding, args.top)
 
     print(f"\nГотово: CSV сохранён в {out_path}")
     return 0
 
 
 main()
-

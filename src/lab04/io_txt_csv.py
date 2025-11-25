@@ -1,18 +1,19 @@
-﻿from __future__ import annotations
-
-import csv
+﻿import csv
 from pathlib import Path
 from typing import Iterable, Sequence
 
 
 def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    """Прочитать файл целиком и вернуть содержимое как строку."""
     return Path(path).read_text(encoding=encoding)
 
 
 def ensure_parent_dir(path: str | Path) -> None:
-    p = Path(path)
-    if p.parent and not p.parent.exists():
-        p.parent.mkdir(parents=True, exist_ok=True)
+    """Создать родительскую папку для path, если её ещё нет."""
+    pathObj = Path(path)
+    parent = pathObj.parent
+    if parent and not parent.exists():
+        parent.mkdir(parents=True, exist_ok=True)
 
 
 def write_csv(
@@ -20,26 +21,31 @@ def write_csv(
     path: str | Path,
     header: tuple[str, ...] | None = None,
 ) -> None:
-    p = Path(path)
-    ensure_parent_dir(p)
+    """Записать строки в CSV-файл с разделителем запятая."""
+    pathObj = Path(path)
+    ensure_parent_dir(pathObj)
 
-    rows_list = list(rows)
-    row_len: int | None = len(rows_list[0]) if rows_list else None
+    rowList = list(rows)
+    rowLen: int | None = len(rowList[0]) if rowList else None
 
     if header is not None:
-        if row_len is None:
-            row_len = len(header)
-        elif len(header) != row_len:
-            raise ValueError(f"Header length {len(header)} != row length {row_len}")
+        if rowLen is None:
+            rowLen = len(header)
+        elif len(header) != rowLen:
+            raise ValueError(
+                f"Header length {len(header)} != row length {rowLen}"
+            )
 
-    if row_len is not None:
-        for i, r in enumerate(rows_list):
-            if len(r) != row_len:
-                raise ValueError(f"Row {i} length {len(r)} != expected {row_len}")
+    if rowLen is not None:
+        for index, row in enumerate(rowList):
+            if len(row) != rowLen:
+                raise ValueError(
+                    f"Row {index} length {len(row)} != expected {rowLen}"
+                )
 
-    with p.open("w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
+    with pathObj.open("w", encoding="utf-8", newline="") as file:
+        writer = csv.writer(file)
         if header is not None:
-            w.writerow(header)
-        for r in rows_list:
-            w.writerow(r)
+            writer.writerow(header)
+        for row in rowList:
+            writer.writerow(row)
