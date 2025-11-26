@@ -166,7 +166,7 @@ print(col_sums([[-1, 1], [10, -10]]))
 print(col_sums([[0, 0], [0, 0]]))
 print(col_sums([[1, 2], [3]]))
 ```
-![Картинка 1](./images/lab02/matrix.png)
+![Картинка 2](./images/lab02/matrix.png)
 
 ### Задание 3
 ```python
@@ -198,7 +198,7 @@ print(format_record(("Петров Пётр", "IKBO-12", 5.0)))
 print(format_record(("  сидорова  анна   сергеевна ", "ABB-01", 3.999)))
 ```
 
-![Картинка 1](./images/lab02/tuples.png)
+![Картинка 3](./images/lab02/tuples.png)
 
 
 ## Лабораторная работа 3
@@ -308,7 +308,7 @@ def main():
 main()
 ```
 
-![Картинка 3](./images/lab03/B01.png)
+![Картинка 4](./images/lab03/B01.png)
 
 
 ## Лабораторная работа 4
@@ -321,12 +321,10 @@ from typing import Iterable, Sequence
 
 
 def read_text(path: str | Path, encoding: str = "utf-8") -> str:
-    """Прочитать файл целиком и вернуть содержимое как строку."""
     return Path(path).read_text(encoding=encoding)
 
 
 def ensure_parent_dir(path: str | Path) -> None:
-    """Создать родительскую папку для path, если её ещё нет."""
     pathObj = Path(path)
     parent = pathObj.parent
     if parent and not parent.exists():
@@ -338,7 +336,6 @@ def write_csv(
     path: str | Path,
     header: tuple[str, ...] | None = None,
 ) -> None:
-    """Записать строки в CSV-файл с разделителем запятая."""
     pathObj = Path(path)
     ensure_parent_dir(pathObj)
 
@@ -368,7 +365,7 @@ def write_csv(
             writer.writerow(row)
 ```
 
-![Картинка 3](./images/lab04/exA01.png)
+![Картинка 1](./images/lab04/exA01.png)
 
 ### Задание B
 ```python
@@ -453,7 +450,7 @@ def main() -> int:
 main()
 ```
 
-![Картинка 3](./images/lab04/exB01.png)
+![Картинка 2](./images/lab04/exB01.png)
 ![Картинка 3](./images/lab04/exB02.png)
 
 
@@ -606,5 +603,109 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
     wb.save(xlsx_file)
 ```
 
-![Картинка 1](./images/lab05/exB_sample01.png)
-![Картинка 4](./images/lab05/exB_out01.png)
+![Картинка 5](./images/lab05/exB_sample01.png)
+![Картинка 6](./images/lab05/exB_out01.png)
+
+
+## Лабораторная работа 6
+
+### Задание 1
+```python
+import argparse
+from collections import Counter
+from pathlib import Path
+import re
+import sys
+
+
+def cat(path, numbered):
+    try:
+        with open(path, encoding="utf-8") as f:
+            for i, line in enumerate(f, 1):
+                if numbered:
+                    print(f"{i}\t{line.rstrip()}")
+                else:
+                    sys.stdout.write(line)
+    except FileNotFoundError:
+        raise
+
+
+def stats(path, top):
+    try:
+        text = Path(path).read_text(encoding="utf-8")
+    except FileNotFoundError:
+        raise
+    words = re.findall(r"\w+", text.lower())
+    for w, c in Counter(words).most_common(top):
+        print(w, c)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="CLI текстовые утилиты")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    p_cat = sub.add_parser("cat", help="вывести файл")
+    p_cat.add_argument("--input", required=True)
+    p_cat.add_argument("-n", action="store_true")
+
+    p_stats = sub.add_parser("stats", help="частоты слов")
+    p_stats.add_argument("--input", required=True)
+    p_stats.add_argument("--top", type=int, default=5)
+
+    args = parser.parse_args()
+
+    try:
+        if args.cmd == "cat":
+            cat(args.input, args.n)
+        else:
+            if args.top <= 0:
+                parser.error("--top должно быть > 0")
+            stats(args.input, args.top)
+    except FileNotFoundError:
+        parser.error("файл не найден")
+    except BrokenPipeError:
+        pass
+
+
+main()
+```
+![Картинка 1](./images/lab06/ex01_help_for_CLI_text.png)
+![Картинка 2](./images/lab06/ex01_CLI.png)
+![Картинка 3](./images/lab06/ex01_stats.png)
+![Картинка 4](./images/lab06/ex01_cli_text_error_no_file.png)
+
+### Задание 2
+```python
+import argparse
+from pathlib import Path
+from src.lab05.json_csv import json_to_csv, csv_to_json
+from src.lab05.csv_xlsx import csv_to_xlsx
+
+
+def main():
+    parser = argparse.ArgumentParser(description="CLI конвертеры")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    for name in ("json2csv", "csv2json", "csv2xlsx"):
+        p = sub.add_parser(name)
+        p.add_argument("--in", dest="input", required=True)
+        p.add_argument("--out", dest="output", required=True)
+
+    args = parser.parse_args()
+
+    if not Path(args.input).is_file():
+        parser.error("входной файл не найден")
+
+    if args.cmd == "json2csv":
+        json_to_csv(args.input, args.output)
+    elif args.cmd == "csv2json":
+        csv_to_json(args.input, args.output)
+    else:
+        csv_to_xlsx(args.input, args.output)
+
+
+main()
+```
+
+![Картинка 5](./images/lab06/ex02_help_for_CLI_convent.png)
+![Картинка 6](./images/lab06/ex02_cli_convert_runs.png)
