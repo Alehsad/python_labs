@@ -709,3 +709,52 @@ main()
 
 ![Картинка 5](./images/lab06/ex02_help_for_CLI_convent.png)
 ![Картинка 6](./images/lab06/ex02_cli_convert_runs.png)
+
+
+## Лабораторная работа 7
+
+## Подготовка окружения
+
+```python
+PS C:\Users\Alehsad\Downloads\repos2\python_labs> python -m venv .venv
+Python 
+PS C:\Users\Alehsad\Downloads\repos2\python_labs> .\.venv\Scripts\Activate.ps1
+(.venv) PS C:\Users\Alehsad\Downloads\repos2\python_labs> python -m pip install --upgrade pip
+Requirement already satisfied: pip in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (25.3)
+(.venv) PS C:\Users\Alehsad\Downloads\repos2\python_labs> python -m pip install pytest black
+Requirement already satisfied: pytest in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (9.0.1)
+Requirement already satisfied: black in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (25.11.0)
+Requirement already satisfied: colorama>=0.4 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from pytest) (0.4.6)
+Requirement already satisfied: iniconfig>=1.0.1 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from pytest) (2.3.0)
+Requirement already satisfied: packaging>=22 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from pytest) (25.0)
+Requirement already satisfied: pluggy<2,>=1.5 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from pytest) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from pytest) (2.19.2)
+Requirement already satisfied: click>=8.0.0 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from black) (8.3.1)
+Requirement already satisfied: mypy-extensions>=0.4.3 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from black) (1.1.0)
+Requirement already satisfied: pathspec>=0.9.0 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from black) (0.12.1)
+Requirement already satisfied: platformdirs>=2 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from black) (4.5.0)
+Requirement already satisfied: pytokens>=0.3.0 in c:\users\alehsad\downloads\repos2\python_labs\.venv\lib\site-packages (from black) (0.3.0)
+```
+
+## pytest -q
+
+```python
+(.venv) PS C:\Users\Alehsad\Downloads\repos2\python_labs> pytest -q
+.......                                                                                                                                                                                     [100%]
+7 passed in 0.15s
+```
+
+## black .
+
+```python
+(.venv) PS C:\Users\Alehsad\Downloads\repos2\python_labs>     black .
+All done! ✨ 🍰 ✨
+27 files left unchanged.
+```
+## black --check .
+
+```python
+(.venv) PS C:\Users\Alehsad\Downloads\repos2\python_labs> black --check .
+All done! ✨ 🍰 ✨
+27 files would be left unchanged.
+```
