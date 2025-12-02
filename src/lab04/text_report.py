@@ -31,7 +31,9 @@ def report_single(in_path: Path, out_path: Path, encoding: str, top_size: int) -
     write_csv(rows, out_path, header=("word", "count"))
 
 
-def report_multi(path_list: list[Path], out_path: Path, encoding: str, top_size: int) -> None:
+def report_multi(
+    path_list: list[Path], out_path: Path, encoding: str, top_size: int
+) -> None:
     all_rows: list[tuple[str, str, int]] = []
 
     for path in path_list:

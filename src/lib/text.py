@@ -11,6 +11,7 @@ def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
 
     return text
 
+
 # print(normalize("ПрИвЕт\nМИр\t"))
 # print(normalize("ёжик, Ёлка"))
 # print(normalize("Hello\r\nWorld"))
@@ -29,7 +30,6 @@ def tokenize(text: str) -> list[str]:
                 result.append(word)
             word = ""
 
-
     if word and word[-1] != "-":
         result.append(word)
 
@@ -41,6 +41,7 @@ def tokenize(text: str) -> list[str]:
 # print(tokenize("по-настоящему круто"))
 # print(tokenize("2025 год"))
 # print(tokenize("emoji 😀 не слово"))
+
 
 def count_freq(tokens: list[str]) -> dict[str, int]:
     freqs = {}
@@ -57,6 +58,7 @@ def sort_key(item):
 def top_n(freqs: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
     sorted_items = sorted(freqs.items(), key=sort_key)
     return sorted_items[:n]
+
 
 tokens1 = ["a", "b", "a", "c", "b", "a"]
 freqs1 = count_freq(tokens1)

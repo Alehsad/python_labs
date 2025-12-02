@@ -19,7 +19,9 @@ def json_to_csv(json_path: str, csv_path: str) -> None:
         raise ValueError("Пустой JSON или ошибка формата") from e
 
     if not isinstance(data, list) or not data:
-        raise ValueError("Пустой JSON или неподдерживаемая структура (нужен список словарей)")
+        raise ValueError(
+            "Пустой JSON или неподдерживаемая структура (нужен список словарей)"
+        )
 
     if not all(isinstance(item, dict) for item in data):
         raise ValueError("JSON должен содержать только словари")
@@ -56,7 +58,9 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
         with csv_file.open(encoding="utf-8") as f:
             reader = csv.DictReader(f)
 
-            if not reader.fieldnames or all(not (h or "").strip() for h in reader.fieldnames):
+            if not reader.fieldnames or all(
+                not (h or "").strip() for h in reader.fieldnames
+            ):
                 raise ValueError("CSV без заголовка или пустой")
 
             rows = []
@@ -75,4 +79,5 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
 
     with json_file.open("w", encoding="utf-8") as f:
         import json
+
         json.dump(rows, f, ensure_ascii=False, indent=2)

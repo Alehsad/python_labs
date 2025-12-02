@@ -32,16 +32,12 @@ def write_csv(
         if rowLen is None:
             rowLen = len(header)
         elif len(header) != rowLen:
-            raise ValueError(
-                f"Header length {len(header)} != row length {rowLen}"
-            )
+            raise ValueError(f"Header length {len(header)} != row length {rowLen}")
 
     if rowLen is not None:
         for index, row in enumerate(rowList):
             if len(row) != rowLen:
-                raise ValueError(
-                    f"Row {index} length {len(row)} != expected {rowLen}"
-                )
+                raise ValueError(f"Row {index} length {len(row)} != expected {rowLen}")
 
     with pathObj.open("w", encoding="utf-8", newline="") as file:
         writer = csv.writer(file)

@@ -12,9 +12,9 @@ def format_record(rec):
         print("ValueError")
 
     surname = parts[0]
-    initials = ''
+    initials = ""
     for p in parts[1:3]:
-        initials += p[0].upper() + '.'
+        initials += p[0].upper() + "."
 
     gpa = f"{float(gpa):.2f}"
 
