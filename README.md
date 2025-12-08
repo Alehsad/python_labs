@@ -1001,5 +1001,5 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 ```
-
+![Картинка 1](./images/lab09/exA_students.png)
 ![Картинка 1](./images/lab09/exA_Group.png)
