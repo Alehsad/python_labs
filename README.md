@@ -758,3 +758,107 @@ All done! ✨ 🍰 ✨
 All done! ✨ 🍰 ✨
 27 files would be left unchanged.
 ```
+
+
+## Лабораторная работа 8
+
+### Задание A
+
+```python
+from dataclasses import dataclass
+from datetime import datetime, date
+
+
+@dataclass
+class Student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+
+    def __post_init__(self) -> None:
+        try:
+            datetime.strptime(self.birthdate, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(
+                "birthdate must be in format YYYY-MM-DD"
+            )
+
+        try:
+            self.gpa = float(self.gpa)
+        except (TypeError, ValueError):
+            raise ValueError(f"gpa must be a number, got {self.gpa!r}")
+
+        if not (0.0 <= self.gpa <= 5.0):
+            raise ValueError("gpa must be between 0 and 5")
+
+    def age(self) -> int:
+        birth = datetime.strptime(self.birthdate, "%Y-%m-%d").date()
+        today = date.today()
+        years = today.year - birth.year
+
+        if (today.month, today.day) < (birth.month, birth.day):
+            years -= 1
+
+        return years
+
+    def to_dict(self) -> dict:
+        return {
+            "fio": self.fio,
+            "birthdate": self.birthdate,
+            "group": self.group,
+            "gpa": self.gpa,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Student":
+        return cls(
+            fio=data["fio"],
+            birthdate=data["birthdate"],
+            group=data["group"],
+            gpa=data["gpa"],
+        )
+
+    def __str__(self) -> str:
+        return f"{self.fio} ({self.group}), {self.birthdate}, GPA: {self.gpa:.2f}"
+```
+
+![Картинка 1](./images/lab08/exA_models.png)
+
+### Задание B
+
+```python
+import json
+
+from .models import Student
+
+
+def students_to_json(students, path):
+    data = [s.to_dict() for s in students]
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def students_from_json(path) -> list[Student]:
+    with open(path, "r", encoding="utf-8") as f:
+        raw = json.load(f)
+
+    if not isinstance(raw, list):
+        raise ValueError("JSON must contain a list of students")
+
+    students: list[Student] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            raise ValueError("Each item in JSON list must be an object")
+        students.append(Student.from_dict(item))
+
+    return students
+```
+
+![Картинка 2](./images/lab08/exB_serialize.png)
+
+### students input/output
+
+![Картинка 3](./images/lab08/students_input.png)
+![Картинка 4](./images/lab08/students_output.png)
