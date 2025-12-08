@@ -869,7 +869,7 @@ def students_from_json(path) -> list[Student]:
 
 ### Задание A
 
-```
+```python
 import csv
 from pathlib import Path
 from typing import List
@@ -964,7 +964,7 @@ class Group:
 ```
 ### Быстрая проверка CRUD
 
-```
+```python
 from src.lab08.models import Student
 from src.lab09.group import Group
 
